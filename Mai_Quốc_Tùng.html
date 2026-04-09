@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Kiểm tra mật khẩu</title>
+
+<style>
+    body {
+        font-family: Arial;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .container {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        width: 350px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    h2 {
+        text-align: center;
+    }
+
+    input {
+        width: 100%;
+        padding: 10px;
+        margin-top: 10px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        font-size: 16px;
+    }
+
+    .rule {
+        font-size: 14px;
+        margin: 5px 0;
+    }
+
+    .valid {
+        color: green;
+    }
+
+    .invalid {
+        color: red;
+    }
+
+    .strength {
+        margin-top: 10px;
+        font-weight: bold;
+    }
+
+    .weak { color: red; }
+    .medium { color: orange; }
+    .strong { color: green; }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>🔐 Kiểm tra mật khẩu</h2>
+
+    <input type="password" id="password" placeholder="Nhập mật khẩu..." onkeyup="checkPassword()">
+
+    <div id="rules">
+        <div id="length" class="rule invalid">❌ Ít nhất 8 ký tự</div>
+        <div id="upper" class="rule invalid">❌ Có chữ hoa (A-Z)</div>
+        <div id="lower" class="rule invalid">❌ Có chữ thường (a-z)</div>
+        <div id="number" class="rule invalid">❌ Có số (0-9)</div>
+        <div id="special" class="rule invalid">❌ Có ký tự đặc biệt</div>
+    </div>
+
+    <div id="strength" class="strength"></div>
+</div>
+
+<script>
+function checkPassword() {
+    let pw = document.getElementById("password").value;
+
+    let length = pw.length >= 8;
+    let upper = /[A-Z]/.test(pw);
+    let lower = /[a-z]/.test(pw);
+    let number = /[0-9]/.test(pw);
+    let special = /[!@#$%^&*(),.?":{}|<>]/.test(pw);
+
+    updateUI("length", length);
+    updateUI("upper", upper);
+    updateUI("lower", lower);
+    updateUI("number", number);
+    updateUI("special", special);
+
+    // Đánh giá độ mạnh
+    let strengthText = document.getElementById("strength");
+
+    if (length && upper && lower && number && special) {
+        if (pw.length >= 12) {
+            strengthText.innerHTML = "💪 Mạnh";
+            strengthText.className = "strength strong";
+        } else {
+            strengthText.innerHTML = "⚖️ Trung bình";
+            strengthText.className = "strength medium";
+        }
+    } else {
+        strengthText.innerHTML = "❌ Yếu";
+        strengthText.className = "strength weak";
+    }
+}
+
+function updateUI(id, condition) {
+    let el = document.getElementById(id);
+    if (condition) {
+        el.classList.remove("invalid");
+        el.classList.add("valid");
+        el.innerHTML = el.innerHTML.replace("❌", "✅");
+    } else {
+        el.classList.remove("valid");
+        el.classList.add("invalid");
+        el.innerHTML = el.innerHTML.replace("✅", "❌");
+    }
+}
+</script>
+
+</body>
+</html>
